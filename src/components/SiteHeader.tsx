@@ -4,12 +4,12 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Crosshair, LogOut, Shield } from "lucide-react";
 
-const tabs = [
+const tabs: { to: "/" | "/scripts" | "/features" | "/community"; label: string; exact?: boolean }[] = [
   { to: "/", label: "Home", exact: true },
   { to: "/scripts", label: "Scripts" },
   { to: "/features", label: "Features" },
   { to: "/community", label: "Community" },
-] as const;
+];
 
 export function SiteHeader() {
   const { user, isAdmin } = useAuth();
