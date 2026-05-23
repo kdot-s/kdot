@@ -4,21 +4,42 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Crosshair, LogOut, Shield } from "lucide-react";
 
+const tabs: { to: "/" | "/scripts" | "/features" | "/community"; label: string; exact?: boolean }[] = [
+  { to: "/", label: "Home", exact: true },
+  { to: "/scripts", label: "Scripts" },
+  { to: "/features", label: "Features" },
+  { to: "/community", label: "Community" },
+];
+
 export function SiteHeader() {
   const { user, isAdmin } = useAuth();
   const navigate = useNavigate();
   return (
-    <header className="sticky top-0 z-40 border-b border-border bg-background/80 backdrop-blur-md">
+    <header className="sticky top-0 z-40 border-b border-border/70 bg-background/60 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
         <Link to="/" className="flex items-center gap-2 font-display text-xl font-bold tracking-wider">
-          <Crosshair className="h-6 w-6 text-primary" />
-          <span>K<span className="text-gradient">DOTS</span> STORE</span>
+          <span className="relative inline-flex">
+            <Crosshair className="h-6 w-6 text-primary" />
+            <span className="absolute inset-0 ring-pulse rounded-full" />
+          </span>
+          <span>K<span className="text-gradient">DOTS</span></span>
         </Link>
-        <nav className="hidden items-center gap-6 text-sm font-medium md:flex">
-          <a href="/#products" className="text-muted-foreground hover:text-foreground">Scripts</a>
-          <a href="/#features" className="text-muted-foreground hover:text-foreground">Features</a>
-          <a href="https://discord.gg/fkRThkmE3s" target="_blank" rel="noreferrer" className="text-muted-foreground hover:text-foreground">Discord</a>
+
+        <nav className="hidden items-center gap-1 rounded-full border border-border/70 bg-surface/60 p-1 md:flex">
+          {tabs.map((t) => (
+            <Link
+              key={t.to}
+              to={t.to}
+              activeOptions={{ exact: t.exact ?? false }}
+              activeProps={{ className: "bg-primary/15 text-foreground" }}
+              inactiveProps={{ className: "text-muted-foreground hover:text-foreground" }}
+              className="rounded-full px-4 py-1.5 text-sm font-medium transition-colors"
+            >
+              {t.label}
+            </Link>
+          ))}
         </nav>
+
         <div className="flex items-center gap-2">
           {isAdmin && (
             <Button asChild size="sm" variant="secondary">
