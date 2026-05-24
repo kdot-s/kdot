@@ -9,18 +9,14 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as ScriptsRouteImport } from './routes/scripts'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as FeaturesRouteImport } from './routes/features'
 import { Route as CommunityRouteImport } from './routes/community'
+import { Route as CheatsRouteImport } from './routes/cheats'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as CheatsIdRouteImport } from './routes/cheats.$id'
 
-const ScriptsRoute = ScriptsRouteImport.update({
-  id: '/scripts',
-  path: '/scripts',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
@@ -36,6 +32,11 @@ const CommunityRoute = CommunityRouteImport.update({
   path: '/community',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CheatsRoute = CheatsRouteImport.update({
+  id: '/cheats',
+  path: '/cheats',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminRoute = AdminRouteImport.update({
   id: '/admin',
   path: '/admin',
@@ -46,65 +47,81 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CheatsIdRoute = CheatsIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => CheatsRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
+  '/cheats': typeof CheatsRouteWithChildren
   '/community': typeof CommunityRoute
   '/features': typeof FeaturesRoute
   '/login': typeof LoginRoute
-  '/scripts': typeof ScriptsRoute
+  '/cheats/$id': typeof CheatsIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
+  '/cheats': typeof CheatsRouteWithChildren
   '/community': typeof CommunityRoute
   '/features': typeof FeaturesRoute
   '/login': typeof LoginRoute
-  '/scripts': typeof ScriptsRoute
+  '/cheats/$id': typeof CheatsIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
+  '/cheats': typeof CheatsRouteWithChildren
   '/community': typeof CommunityRoute
   '/features': typeof FeaturesRoute
   '/login': typeof LoginRoute
-  '/scripts': typeof ScriptsRoute
+  '/cheats/$id': typeof CheatsIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/admin' | '/community' | '/features' | '/login' | '/scripts'
+  fullPaths:
+    | '/'
+    | '/admin'
+    | '/cheats'
+    | '/community'
+    | '/features'
+    | '/login'
+    | '/cheats/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/admin' | '/community' | '/features' | '/login' | '/scripts'
+  to:
+    | '/'
+    | '/admin'
+    | '/cheats'
+    | '/community'
+    | '/features'
+    | '/login'
+    | '/cheats/$id'
   id:
     | '__root__'
     | '/'
     | '/admin'
+    | '/cheats'
     | '/community'
     | '/features'
     | '/login'
-    | '/scripts'
+    | '/cheats/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRoute
+  CheatsRoute: typeof CheatsRouteWithChildren
   CommunityRoute: typeof CommunityRoute
   FeaturesRoute: typeof FeaturesRoute
   LoginRoute: typeof LoginRoute
-  ScriptsRoute: typeof ScriptsRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/scripts': {
-      id: '/scripts'
-      path: '/scripts'
-      fullPath: '/scripts'
-      preLoaderRoute: typeof ScriptsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/login': {
       id: '/login'
       path: '/login'
@@ -126,6 +143,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CommunityRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/cheats': {
+      id: '/cheats'
+      path: '/cheats'
+      fullPath: '/cheats'
+      preLoaderRoute: typeof CheatsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin': {
       id: '/admin'
       path: '/admin'
@@ -140,16 +164,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/cheats/$id': {
+      id: '/cheats/$id'
+      path: '/$id'
+      fullPath: '/cheats/$id'
+      preLoaderRoute: typeof CheatsIdRouteImport
+      parentRoute: typeof CheatsRoute
+    }
   }
 }
+
+interface CheatsRouteChildren {
+  CheatsIdRoute: typeof CheatsIdRoute
+}
+
+const CheatsRouteChildren: CheatsRouteChildren = {
+  CheatsIdRoute: CheatsIdRoute,
+}
+
+const CheatsRouteWithChildren =
+  CheatsRoute._addFileChildren(CheatsRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
+  CheatsRoute: CheatsRouteWithChildren,
   CommunityRoute: CommunityRoute,
   FeaturesRoute: FeaturesRoute,
   LoginRoute: LoginRoute,
-  ScriptsRoute: ScriptsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
